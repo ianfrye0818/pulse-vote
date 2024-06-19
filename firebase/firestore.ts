@@ -1,3 +1,4 @@
+'use server';
 import {
   collection,
   addDoc,
@@ -8,25 +9,25 @@ import {
   getDocs,
   onSnapshot,
 } from 'firebase/firestore';
-import { firestore } from './firebase.config';
 import { Choice, SessionData } from '@/types';
 import { Dispatch, SetStateAction } from 'react';
+import { revalidatePath } from 'next/cache';
+import { db } from './firebase.config';
 
 export async function addSession(
   sessionChoices: Choice[],
   allowMultiple: boolean,
   title: string
 ): Promise<string | undefined> {
-  console.log({ sessionChoices, allowMultiple });
   try {
-    const sessionRef = collection(firestore, 'sessions');
+    const sessionRef = collection(db, 'sessions');
     const doc = await addDoc(sessionRef, {
       title,
       sessionChoices,
       totalVotes: 0,
       allowMultiple,
     });
-    console.log(doc.id);
+    revalidatePath('/get-session');
     return 'Session added';
   } catch (error) {
     console.error(['Error adding document:'], error);
@@ -35,7 +36,7 @@ export async function addSession(
 
 export async function getSession(sessionId: string) {
   try {
-    const docRef = doc(firestore, 'sessions', sessionId);
+    const docRef = doc(db, 'sessions', sessionId);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
@@ -48,7 +49,7 @@ export async function getSession(sessionId: string) {
 
 export async function getSessionList() {
   try {
-    const sessionsRef = collection(firestore, 'sessions');
+    const sessionsRef = collection(db, 'sessions');
     const querySnapshot = await getDocs(sessionsRef);
 
     const sessions = querySnapshot.docs.map((doc) => {
@@ -70,7 +71,7 @@ export async function addVote(
     if (!document) {
       throw new Error('Session not found');
     }
-    const sessionRef = doc(firestore, 'sessions', sessionId);
+    const sessionRef = doc(db, 'sessions', sessionId);
 
     await updateDoc(sessionRef, {
       sessionChoices: document.data.sessionChoices.map((choice: Choice) => {
@@ -84,42 +85,16 @@ export async function addVote(
       }),
       totalVotes: document.data.totalVotes + 1,
     });
-    // await updateDoc(sessionRef, sessionId, {
-    //   sessionChoices: {
-    //     [choiceIndex]: {
-    //       votes: document.data[choiceIndex].votes + 1,
-    //     },
-    //   },
-    //   totalVotes: document.data.totalVotes + 1,
-    // });
     return 'Vote added';
-  } catch (error) {
-    console.log(['Error adding vote'], error);
-  }
+  } catch (error) {}
 }
 
 export async function deleteSession(sessionId: string) {
   try {
-    const sessionRef = doc(firestore, 'sessions', sessionId);
+    const sessionRef = doc(db, 'sessions', sessionId);
     await deleteDoc(sessionRef);
+    revalidatePath('/get-session');
   } catch (error) {
     console.error(['Error deleting document:'], error);
   }
 }
-
-export function watchSession(
-  sessionId: string,
-  setSession: Dispatch<SetStateAction<SessionData | null>>
-) {
-  const sessionRef = doc(firestore, 'sessions', sessionId);
-  onSnapshot(sessionRef, (doc) => {
-    if (doc.exists()) {
-      const sessionData = { docId: doc.id, data: doc.data() } as SessionData;
-      setSession(sessionData);
-    } else {
-      setSession(null);
-    }
-  });
-}
-
-export { firestore };

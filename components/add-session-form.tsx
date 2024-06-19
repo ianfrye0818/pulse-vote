@@ -10,6 +10,7 @@ import { z } from 'zod';
 import { addSession } from '@/firebase/firestore'; // Assuming this is your Firestore function
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   title: z.string().min(1, { message: 'Title is required' }),
@@ -24,6 +25,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export default function AddSessionForm() {
+  const router = useRouter();
   const [allowMultiple, setAllowMultiple] = useState(true);
   const {
     control,
@@ -47,8 +49,8 @@ export default function AddSessionForm() {
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
       const session = await addSession(data.choices, allowMultiple, data.title);
-      console.log(session);
       reset();
+      router.push('/get-session');
     } catch (error) {
       if (error instanceof z.ZodError) {
         console.error('Validation failed:', error.errors);

@@ -2,14 +2,14 @@
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import useSession, { SessionData } from '@/hooks/useSession';
-import { firestore } from '@/firebase/firebase.config';
 import { useState } from 'react';
 import SelectOption from './components/select-option';
 import { Choice } from '@/types';
 import { addVote } from '@/firebase/firestore';
+import { db } from '@/firebase/firebase.config';
 
 export default function VoteSessionPage({ params }: { params: { sessionId: string } }) {
-  const session = useSession(firestore, params.sessionId) as SessionData;
+  const session = useSession(db, params.sessionId) as SessionData;
   const [userChoices, setUserChoices] = useState<string[]>([]);
   const allowMultiple = session?.data.allowMultiple;
   if (!session) {
@@ -34,7 +34,6 @@ export default function VoteSessionPage({ params }: { params: { sessionId: strin
     event.preventDefault();
     try {
       const response = await addVote(params.sessionId, userChoices);
-      console.log(response);
     } catch (error) {
       console.error(['Error submitting vote', error]);
     }
