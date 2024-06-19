@@ -7,8 +7,10 @@ import SelectOption from './components/select-option';
 import { Choice } from '@/types';
 import { addVote } from '@/firebase/firestore';
 import { db } from '@/firebase/firebase.config';
+import { useRouter } from 'next/navigation';
 
 export default function VoteSessionPage({ params }: { params: { sessionId: string } }) {
+  const router = useRouter();
   const session = useSession(db, params.sessionId) as SessionData;
   const [userChoices, setUserChoices] = useState<string[]>([]);
   const allowMultiple = session?.data.allowMultiple;
@@ -33,7 +35,8 @@ export default function VoteSessionPage({ params }: { params: { sessionId: strin
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const response = await addVote(params.sessionId, userChoices);
+      await addVote(params.sessionId, userChoices);
+      router.push('/vote/thank-you');
     } catch (error) {
       console.error(['Error submitting vote', error]);
     }

@@ -13,6 +13,7 @@ import { Choice, SessionData } from '@/types';
 import { Dispatch, SetStateAction } from 'react';
 import { revalidatePath } from 'next/cache';
 import { db } from './firebase.config';
+import { redirect } from 'next/navigation';
 
 export async function addSession(
   sessionChoices: Choice[],
@@ -28,7 +29,7 @@ export async function addSession(
       allowMultiple,
     });
     revalidatePath('/get-session');
-    return 'Session added';
+    return doc.id;
   } catch (error) {
     console.error(['Error adding document:'], error);
   }

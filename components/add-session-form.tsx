@@ -11,7 +11,6 @@ import { addSession } from '@/firebase/firestore'; // Assuming this is your Fire
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { SketchPicker } from 'react-color';
 import { ColorPicker } from '@/app/add-session/colorpicker';
 
 const formSchema = z.object({
@@ -53,9 +52,11 @@ export default function AddSessionForm() {
   });
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    console.log(data);
     try {
-      const session = await addSession(data.choices, allowMultiple, data.title);
+      await addSession(data.choices, allowMultiple, data.title);
       reset();
+
       router.push('/get-session');
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -104,10 +105,6 @@ export default function AddSessionForm() {
                 type='text'
                 placeholder={`Choice ${index + 1}`}
               />
-              <ColorPicker
-                color={watch(`choices.${index}.color`)}
-                onColorChange={(newColor) => setValue(`choices.${index}.color`, newColor)}
-              />
 
               {index > 0 && (
                 <Button
@@ -118,6 +115,10 @@ export default function AddSessionForm() {
                   <XIcon className='h-4 w-4' />
                 </Button>
               )}
+              <ColorPicker
+                color={watch(`choices.${index}.color`)}
+                onColorChange={(newColor) => setValue(`choices.${index}.color`, newColor)}
+              />
             </div>
           ))}
           {errors.choices && (

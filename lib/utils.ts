@@ -4,12 +4,24 @@ import { twMerge } from 'tailwind-merge';
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
-
 function hexToRgb(hex: string) {
-  // Remove the hash at the start if it's there
+  if (!hex || typeof hex !== 'string') {
+    throw new Error(`Invalid hex color: ${hex}`);
+  }
+
   hex = hex.replace(/^#/, '');
 
-  // Parse the r, g, b values
+  if (hex.length !== 6 && hex.length !== 3) {
+    throw new Error(`Invalid hex color length: ${hex}`);
+  }
+
+  if (hex.length === 3) {
+    hex = hex
+      .split('')
+      .map((char) => char + char)
+      .join('');
+  }
+
   let bigint = parseInt(hex, 16);
   let r = (bigint >> 16) & 255;
   let g = (bigint >> 8) & 255;
@@ -19,17 +31,11 @@ function hexToRgb(hex: string) {
 }
 
 function calculateLuminance(color: string) {
-  let rgb;
-
-  if (color.startsWith('#')) {
-    rgb = hexToRgb(color);
-  } else {
-    const matched = color.match(/\d+/g);
-    if (matched === null) {
-      throw new Error(`Invalid color format: ${color}`);
-    }
-    rgb = matched.map(Number);
+  if (!color || typeof color !== 'string') {
+    throw new Error(`Invalid color: ${color}`);
   }
+
+  let rgb = hexToRgb(color);
 
   const [r, g, b] = rgb.map((value) => {
     value /= 255;
@@ -40,6 +46,10 @@ function calculateLuminance(color: string) {
 }
 
 export function getContrastingTextColor(backgroundColor: string) {
+  if (!backgroundColor || typeof backgroundColor !== 'string') {
+    throw new Error(`Invalid background color: ${backgroundColor}`);
+  }
+
   const luminance = calculateLuminance(backgroundColor);
   return luminance > 0.5 ? 'black' : 'white';
 }

@@ -13,6 +13,7 @@ export default function GetSessionPage({ params }: { params: { sessionId: string
   const { sessionId } = params;
   const session = useSession(db, sessionId) as SessionData;
   const baseURL = env.BASE_URL;
+  console.log(baseURL);
 
   if (!session) {
     return null;
