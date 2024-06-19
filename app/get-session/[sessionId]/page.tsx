@@ -1,13 +1,18 @@
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { env } from '@/env';
 import { db } from '@/firebase/firebase.config';
 import useSession from '@/hooks/useSession';
 import { SessionData } from '@/types';
 
+import QRCode from 'react-qr-code';
+
 export default function GetSessionPage({ params }: { params: { sessionId: string } }) {
   const { sessionId } = params;
   const session = useSession(db, sessionId) as SessionData;
+  const baseURL = env.BASE_URL;
 
   if (!session) {
     return null;
@@ -38,31 +43,34 @@ export default function GetSessionPage({ params }: { params: { sessionId: string
   }
 
   return (
-    <div className='h-screen flex flex-col justify-center items-center'>
-      <Card className=' w-full max-w-min flex flex-col justify-center items-center'>
+    <div className='h-screen flex flex-col'>
+      <Card className='flex-grow-[2] container mt-3 mx-auto flex flex-col justify-between items-center '>
         <CardHeader>
           <CardTitle>{session.data.title}</CardTitle>
-          {/* <CardDescription>A bar graph displaying data from a database.</CardDescription> */}
         </CardHeader>
-        <CardContent>
-          <div className='flex items-end gap-4'>
+        <CardContent className='w-full flex justify-center'>
+          <div className='flex gap-4'>
             {session.data.sessionChoices.map((choice, index) => {
               const randomColor = setRandomNonWhiteBackgroundColor();
-              const percentage = (choice.votes / session.data.totalVotes) * 100 || 100;
+              const percentage = (choice.votes / session.data.totalVotes) * 100 || 0;
 
               return (
                 <div
                   key={index}
-                  className='flex flex-col items-center '
+                  className='flex flex-col items-center justify-end'
                 >
                   <div
                     className='relative w-[100px]'
-                    style={{ height: calculateHeight(percentage), backgroundColor: randomColor }}
+                    style={{
+                      height: calculateHeight(percentage),
+                      backgroundColor: session.data.sessionChoices[index].color || randomColor,
+                    }}
                   >
                     <div className='absolute bottom-0 w-full text-center text-primary-foreground font-medium'>
                       {percentage.toFixed(2)}%
                     </div>
                   </div>
+                  <Separator className='h-[1px] bg-black' />
                   <div className='text-center text-muted-foreground font-medium mt-2'>
                     {choice.value}
                   </div>
@@ -72,6 +80,9 @@ export default function GetSessionPage({ params }: { params: { sessionId: string
           </div>
         </CardContent>
       </Card>
+      <div className=' flex-1 p-5 flex justify-center items-center '>
+        <QRCode value={`${baseURL}/vote/${sessionId}`} />
+      </div>
     </div>
   );
 }

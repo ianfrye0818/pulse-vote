@@ -1,6 +1,7 @@
 export interface Choice {
   value: string;
   votes: number;
+  color?: string;
 }
 
 export interface SessionData {

@@ -11,6 +11,8 @@ import { addSession } from '@/firebase/firestore'; // Assuming this is your Fire
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { SketchPicker } from 'react-color';
+import { ColorPicker } from '@/app/add-session/colorpicker';
 
 const formSchema = z.object({
   title: z.string().min(1, { message: 'Title is required' }),
@@ -18,6 +20,7 @@ const formSchema = z.object({
     z.object({
       value: z.string().min(1, { message: 'Choice value is required' }),
       votes: z.number().int(),
+      color: z.string().min(1, { message: 'Color is required' }),
     })
   ),
 });
@@ -27,17 +30,20 @@ type FormValues = z.infer<typeof formSchema>;
 export default function AddSessionForm() {
   const router = useRouter();
   const [allowMultiple, setAllowMultiple] = useState(true);
+  // const [color, setColor] = useState('#0FDFD3');
   const {
     control,
     handleSubmit,
     formState: { errors },
     register,
     reset,
+    watch,
+    setValue,
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: '',
-      choices: [{ value: '', votes: 0 }],
+      choices: [{ value: '', votes: 0, color: '#0FDFD3' }],
     },
   });
 
@@ -64,7 +70,7 @@ export default function AddSessionForm() {
   };
 
   const addChoice = () => {
-    append({ value: '', votes: 0 });
+    append({ value: '', votes: 0, color: '#0FDFD3' }); // Include default color
   };
 
   return (
@@ -97,6 +103,10 @@ export default function AddSessionForm() {
                 {...register(`choices.${index}.value`, { required: true })}
                 type='text'
                 placeholder={`Choice ${index + 1}`}
+              />
+              <ColorPicker
+                color={watch(`choices.${index}.color`)}
+                onColorChange={(newColor) => setValue(`choices.${index}.color`, newColor)}
               />
 
               {index > 0 && (
