@@ -49,9 +49,12 @@ export default function GetSessionPage({ params }: { params: { sessionId: string
       <Card className='flex-grow-[2] container mt-3 mx-auto flex flex-col justify-between items-center  relative border-none'>
         <CardHeader>
           <CardTitle>{session.data.title}</CardTitle>
-          <div className='flex justify-center items-center gap-8 my-3'>
-            <h2 className='text-2xl font-bold'>Total Votes</h2>
-            <p className='text-xl'>{session.data.totalVotes}</p>
+          <div className='flex flex-col justify-center items-center gap-2 my-3'>
+            <div className='flex gap-4 items-center'>
+              <h2 className='text-2xl font-bold'>Total Votes</h2>
+              <p className='text-2xl font-bold'>{session.data.totalVotes}</p>
+            </div>
+            <p className='text-xl'>Access Code:{session.data.accessCode}</p>
           </div>
         </CardHeader>
         <CardContent className='w-full flex justify-center'>
@@ -88,12 +91,14 @@ export default function GetSessionPage({ params }: { params: { sessionId: string
             })}
           </div>
         </CardContent>
-        <QRCode
-          size={130}
-          value={`${baseURL}/vote/${sessionId}`}
-          width={16}
-          className='absolute top-5 right-5  '
-        />
+        <div className='absolute top-5 right-5 flex flex-col gap-2  '>
+          <QRCode
+            size={130}
+            value={`${baseURL}/vote/${sessionId}`}
+            width={16}
+          />
+          <p className='text-center text-xl font-bold'>{session.data.accessCode}</p>
+        </div>
       </Card>
     </PageWrapper>
   );

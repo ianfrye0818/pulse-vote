@@ -16,4 +16,5 @@ export interface DocData {
   allowMultiple: boolean;
   sessionChoices: Choice[];
   totalVotes: number;
+  accessCode: string;
 }

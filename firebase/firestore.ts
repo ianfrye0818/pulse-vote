@@ -16,6 +16,7 @@ import { revalidatePath } from 'next/cache';
 import { db } from './firebase.config';
 import { currentUser } from '@clerk/nextjs/server';
 import { NextRequest } from 'next/server';
+import { generateAccessCode } from '@/lib/utils';
 
 export async function addSession(
   sessionChoices: Choice[],
@@ -32,6 +33,7 @@ export async function addSession(
       totalVotes: 0,
       allowMultiple,
       userId: user.id,
+      accessCode: generateAccessCode(),
     });
     revalidatePath('/get-session');
     return doc.id;
@@ -50,6 +52,22 @@ export async function getSession(sessionId: string) {
     }
   } catch (error) {
     console.error(['Error getting document:'], error);
+  }
+}
+
+export async function getSessionByAccessCode(accessCode: string) {
+  try {
+    const q = query(
+      collection(db, 'sessions'),
+      where('accessCode', '==', accessCode.toUpperCase())
+    );
+    const querySnapshot = await getDocs(q);
+    const sessions = querySnapshot.docs.map((doc) => {
+      return { docId: doc.id, data: doc.data() };
+    });
+    return sessions[0];
+  } catch (error) {
+    console.error(['Error getting documents:'], error);
   }
 }
 
@@ -86,9 +104,8 @@ export async function addVote(
       sessionChoices: document.data.sessionChoices.map((choice: Choice) => {
         if (userChices.includes(choice.value)) {
           return {
-            value: choice.value,
+            ...choice,
             votes: choice.votes + 1,
-            color: choice.color,
           };
         }
         return choice;

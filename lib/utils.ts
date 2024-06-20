@@ -54,3 +54,16 @@ export function getContrastingTextColor(backgroundColor: string) {
   const luminance = calculateLuminance(backgroundColor);
   return luminance > 0.5 ? 'black' : 'white';
 }
+
+export function generateAccessCode() {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let code = '';
+  const codeLength = 4;
+
+  for (let i = 0; i < codeLength; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    code += characters[randomIndex];
+  }
+
+  return code;
+}
