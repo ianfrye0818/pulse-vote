@@ -7,17 +7,19 @@ import React from 'react';
 export default async function Header() {
   const user = await currentUser();
   return (
-    <div className='container mx-auto flex justify-between items-center h-20'>
-      <Link href='/get-session'>
-        <h1 className='text-2xl font-bold'>PulseVote</h1>
-      </Link>
-      {user ? (
-        <UserButton />
-      ) : (
-        <Button asChild>
-          <Link href='/sign-in'>Sign In</Link>
-        </Button>
-      )}
-    </div>
+    <header className='border-b h-16 mb-4'>
+      <div className='container mx-auto flex h-full justify-between items-center '>
+        <Link href='/get-session'>
+          <h1 className='text-2xl font-bold'>PulseVote</h1>
+        </Link>
+        {user ? (
+          <UserButton />
+        ) : (
+          <Button asChild>
+            <Link href='/sign-in'>Sign In</Link>
+          </Button>
+        )}
+      </div>
+    </header>
   );
 }
