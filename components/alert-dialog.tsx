@@ -10,19 +10,16 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { ForwardRefExoticComponent, MouseEventHandler } from 'react';
-import { Button } from './ui/button';
-import { Trash2Icon } from 'lucide-react';
 import clsx from 'clsx';
+import { MouseEventHandler } from 'react';
 
 interface CustomAlertDialogProps {
   trigger?: string | React.ReactNode;
   title: string;
   description: string;
   onConfirm: MouseEventHandler<HTMLButtonElement>;
-  triggerColor?: string;
-  textColor?: string;
   className?: string;
+  submitting?: boolean;
 }
 
 export default function CustomAlertDialog({
@@ -30,9 +27,8 @@ export default function CustomAlertDialog({
   onConfirm,
   title,
   trigger,
-  triggerColor = 'black',
-  textColor = 'white',
   className,
+  submitting,
 }: CustomAlertDialogProps) {
   const handleConfirmClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation();
@@ -57,7 +53,12 @@ export default function CustomAlertDialog({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmClick}>Continue</AlertDialogAction>
+            <AlertDialogAction
+              disabled={submitting}
+              onClick={handleConfirmClick}
+            >
+              Continue
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

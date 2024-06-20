@@ -13,6 +13,7 @@ import PageWrapper from '@/app/page-wrapper';
 export default function VoteSessionPage({ params }: { params: { sessionId: string } }) {
   const router = useRouter();
   const session = useSession(db, params.sessionId) as SessionData;
+  const [submitting, setSubmitting] = useState(false);
   const [userChoices, setUserChoices] = useState<string[]>([]);
   const allowMultiple = session?.data.allowMultiple;
   if (!session) {
@@ -35,11 +36,14 @@ export default function VoteSessionPage({ params }: { params: { sessionId: strin
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setSubmitting(true);
     try {
       await addVote(params.sessionId, userChoices);
       router.push('/vote/thank-you');
     } catch (error) {
       console.error(['Error submitting vote', error]);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -75,8 +79,9 @@ export default function VoteSessionPage({ params }: { params: { sessionId: strin
         <Button
           type='submit'
           className='w-full'
+          disabled={submitting}
         >
-          Submit
+          {submitting ? 'Submitting...' : 'Submit'}
         </Button>
       </form>
     </PageWrapper>

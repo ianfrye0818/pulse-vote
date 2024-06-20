@@ -34,6 +34,7 @@ export default function AddSessionForm() {
   const { successToast } = useSuccessToast();
   const { errorToast } = useErrorToast();
   const [allowMultiple, setAllowMultiple] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     control,
@@ -57,6 +58,7 @@ export default function AddSessionForm() {
   });
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    setIsSubmitting(true);
     try {
       await addSession(data.choices, allowMultiple, data.title);
       reset();
@@ -81,6 +83,8 @@ export default function AddSessionForm() {
           message: 'An unknown error occurred',
         });
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -153,7 +157,12 @@ export default function AddSessionForm() {
             />
             <Label htmlFor='allow-multiple'>Allow Multiple Choices</Label>
           </div>
-          <Button type='submit'>Submit</Button>
+          <Button
+            type='submit'
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Submitting... ' : 'Submit'}
+          </Button>
         </form>
       </CardContent>
     </Card>

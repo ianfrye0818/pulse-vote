@@ -36,6 +36,7 @@ export default function EditSessionForm({ session }: { session: SessionData }) {
   const { successToast } = useSuccessToast();
   const { errorToast } = useErrorToast();
   const [allowMultiple, setAllowMultiple] = useState(session.data.allowMultiple);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     control,
@@ -59,8 +60,13 @@ export default function EditSessionForm({ session }: { session: SessionData }) {
   });
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    setIsSubmitting(true);
     try {
-      await updateSession(session.docId, { ...data, allowMultiple });
+      await updateSession(session.docId, {
+        ...data,
+        allowMultiple,
+        totalVotes: session.data.totalVotes,
+      });
       reset();
       successToast({
         message: 'Session created successfully',
@@ -83,6 +89,8 @@ export default function EditSessionForm({ session }: { session: SessionData }) {
           message: 'An unknown error occurred',
         });
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -155,6 +163,7 @@ export default function EditSessionForm({ session }: { session: SessionData }) {
             <Label htmlFor='allow-multiple'>Allow Multiple Choices</Label>
           </div>
           <CustomAlertDialog
+            submitting={isSubmitting}
             title='Modify Session'
             description='Are you sure you want to modify this session?'
             onConfirm={handleSubmit(onSubmit)}
