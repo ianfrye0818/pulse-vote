@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { SignInButton, SignUpButton } from '@clerk/nextjs';
 import { currentUser } from '@clerk/nextjs/server';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
@@ -21,13 +22,13 @@ export default async function Home() {
           variant={'outline'}
           className='w-[150px]'
         >
-          <Link href='/sign-up'>Sign Up</Link>
+          <SignInButton />
         </Button>
         <Button
           asChild
           className='w-[150px]'
         >
-          <Link href='/sign-in'>Get Started</Link>
+          <SignUpButton />
         </Button>
       </div>
     </div>
