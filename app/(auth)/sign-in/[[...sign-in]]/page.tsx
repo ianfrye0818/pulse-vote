@@ -13,7 +13,7 @@ export default function SignInPage() {
         <h1 className='text-3xl font-bold'>Welcome back</h1>
         <p className='text-muted-foreground'>Enter your credentials to access your account</p>
       </div>
-      <SignIn />
+      <SignIn afterSignOutUrl={'/sign-in'} />
     </div>
   );
 }

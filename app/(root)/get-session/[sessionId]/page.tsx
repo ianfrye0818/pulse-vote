@@ -1,11 +1,12 @@
 'use client';
 
+import PageWrapper from '@/app/page-wrapper';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { env } from '@/env';
 import { db } from '@/firebase/firebase.config';
 import useSession from '@/hooks/useSession';
-import { SessionData } from '@/types';
+import { Choice, SessionData } from '@/types';
 
 import QRCode from 'react-qr-code';
 
@@ -44,7 +45,7 @@ export default function GetSessionPage({ params }: { params: { sessionId: string
   }
 
   return (
-    <div className='h-screen flex flex-col'>
+    <PageWrapper>
       <Card className='flex-grow-[2] container mt-3 mx-auto flex flex-col justify-between items-center  relative border-none'>
         <CardHeader>
           <CardTitle>{session.data.title}</CardTitle>
@@ -55,7 +56,7 @@ export default function GetSessionPage({ params }: { params: { sessionId: string
         </CardHeader>
         <CardContent className='w-full flex justify-center'>
           <div className='flex gap-4'>
-            {session.data.sessionChoices.map((choice, index) => {
+            {session.data.sessionChoices.map((choice: Choice, index: number) => {
               const randomColor = setRandomNonWhiteBackgroundColor();
               const percentage = (choice.votes / session.data.totalVotes) * 100 || 0;
               const backgroundColor = choice.color;
@@ -94,6 +95,6 @@ export default function GetSessionPage({ params }: { params: { sessionId: string
           className='absolute top-5 right-5  '
         />
       </Card>
-    </div>
+    </PageWrapper>
   );
 }

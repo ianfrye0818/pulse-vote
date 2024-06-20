@@ -1,3 +1,5 @@
+import { DocumentData } from 'firebase/firestore';
+
 export interface Choice {
   value: string;
   votes: number;
@@ -6,7 +8,7 @@ export interface Choice {
 
 export interface SessionData {
   docId: string;
-  data: DocData;
+  data: DocData | DocumentData;
 }
 
 export interface DocData {
