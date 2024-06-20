@@ -1,8 +1,12 @@
 import { Button } from '@/components/ui/button';
+import { currentUser } from '@clerk/nextjs/server';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import React from 'react';
 
-export default function Home() {
+export default async function Home() {
+  const user = await currentUser();
+  if (user) redirect('/get-session');
   return (
     <div className='h-screen w-full flex flex-col items-center justify-evenly'>
       <div className='flex flex-col gap-3'>

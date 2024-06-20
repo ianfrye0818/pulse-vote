@@ -8,4 +8,4 @@ export const config = {
   matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
 };
 
-const isProtectedRoute = createRouteMatcher(['/get-session', '/add-session', /\/get-session\/.*/]);
+const isProtectedRoute = createRouteMatcher(['/get-session', '/add-session']);
