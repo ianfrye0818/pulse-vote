@@ -54,6 +54,9 @@ export default function GetSessionPage({ params }: { params: { sessionId: string
             {session.data.sessionChoices.map((choice, index) => {
               const randomColor = setRandomNonWhiteBackgroundColor();
               const percentage = (choice.votes / session.data.totalVotes) * 100 || 0;
+              const backgroundColor = choice.color;
+              console.log({ choice });
+              console.log(backgroundColor);
 
               return (
                 <div

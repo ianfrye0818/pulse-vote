@@ -80,6 +80,7 @@ export async function addVote(
           return {
             value: choice.value,
             votes: choice.votes + 1,
+            color: choice.color,
           };
         }
         return choice;
