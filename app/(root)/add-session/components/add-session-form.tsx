@@ -1,17 +1,19 @@
 'use client';
 import { useForm, useFieldArray, SubmitHandler } from 'react-hook-form';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Input } from './ui/input';
-import { Separator } from './ui/separator';
-import { Button } from './ui/button';
-import { Checkbox } from './ui/checkbox';
-import { Label } from './ui/label';
 import { z } from 'zod';
 import { addSession } from '@/firebase/firestore'; // Assuming this is your Firestore function
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ColorPicker } from '@/app/add-session/colorpicker';
+import useErrorToast from '@/hooks/useErrorToast';
+import useSuccessToast from '@/hooks/useSuccessToast';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
+import { ColorPicker } from './colorpicker';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 
 const formSchema = z.object({
   title: z.string().min(1, { message: 'Title is required' }),
@@ -28,6 +30,8 @@ type FormValues = z.infer<typeof formSchema>;
 
 export default function AddSessionForm() {
   const router = useRouter();
+  const { successToast } = useSuccessToast();
+  const { errorToast } = useErrorToast();
   const [allowMultiple, setAllowMultiple] = useState(true);
 
   const {
@@ -51,23 +55,30 @@ export default function AddSessionForm() {
     name: 'choices',
   });
 
-  console.log(watch('choices'));
-
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    console.log(data);
     try {
       await addSession(data.choices, allowMultiple, data.title);
       reset();
-
+      successToast({
+        message: 'Session created successfully',
+      });
       router.push('/get-session');
     } catch (error) {
       if (error instanceof z.ZodError) {
         console.error('Validation failed:', error.errors);
-        // Handle validation errors as needed
+        errorToast({
+          message: 'Please check your inputs',
+        });
       } else if (error instanceof Error) {
-        console.error('Submission error:', error.message);
+        console.error('Error:', error);
+        errorToast({
+          message: 'An error occurred while creating the session',
+        });
       } else {
         console.error('Unknown error:', error);
+        errorToast({
+          message: 'An unknown error occurred',
+        });
       }
     }
   };

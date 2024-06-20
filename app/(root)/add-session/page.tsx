@@ -1,7 +1,7 @@
-import AddSessionForm from '@/components/add-session-form';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
+import AddSessionForm from './components/add-session-form';
 
 export default function page() {
   return (
