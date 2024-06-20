@@ -1,12 +1,16 @@
 'use client';
 
 import PageWrapper from '@/app/page-wrapper';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { HoverCard } from '@/components/ui/hover-card';
 import { Separator } from '@/components/ui/separator';
 import { env } from '@/env';
 import { db } from '@/firebase/firebase.config';
 import useSession from '@/hooks/useSession';
 import { Choice, SessionData } from '@/types';
+import { HoverCardContent, HoverCardTrigger } from '@radix-ui/react-hover-card';
+import Link from 'next/link';
 
 import QRCode from 'react-qr-code';
 
@@ -95,7 +99,16 @@ export default function GetSessionPage({ params }: { params: { sessionId: string
             value={`${baseURL}/vote/${sessionId}`}
             width={16}
           />
-          <p className='text-center text-xl font-bold'>{session.data.accessCode}</p>
+          <HoverCard>
+            <HoverCardTrigger>
+              <p className='text-center text-xl font-bold'>{session.data.accessCode}</p>
+            </HoverCardTrigger>
+            <HoverCardContent>
+              <Button asChild>
+                <Link href='/get-session'>Back to sessions</Link>
+              </Button>
+            </HoverCardContent>
+          </HoverCard>
         </div>
       </Card>
     </PageWrapper>
