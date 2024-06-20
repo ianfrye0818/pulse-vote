@@ -48,13 +48,11 @@ export default function GetSessionPage({ params }: { params: { sessionId: string
     <PageWrapper>
       <Card className='flex-grow-[2] container mt-3 mx-auto flex flex-col justify-between items-center  relative border-none'>
         <CardHeader>
-          <CardTitle>{session.data.title}</CardTitle>
-          <div className='flex flex-col justify-center items-center gap-2 my-3'>
-            <div className='flex gap-4 items-center'>
-              <h2 className='text-2xl font-bold'>Total Votes</h2>
-              <p className='text-2xl font-bold'>{session.data.totalVotes}</p>
-            </div>
-            <p className='text-xl'>Access Code:{session.data.accessCode}</p>
+          <CardTitle className='text-center mb-2'>{session.data.title}</CardTitle>
+
+          <div className='flex justify-center items-center gap-8 my-3'>
+            <h2 className='text-2xl font-bold'>Total Votes:</h2>
+            <p className='text-xl font-bold'>{session.data.totalVotes}</p>
           </div>
         </CardHeader>
         <CardContent className='w-full flex justify-center'>
