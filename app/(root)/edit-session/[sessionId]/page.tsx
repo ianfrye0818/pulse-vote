@@ -1,8 +1,9 @@
 import PageWrapper from '@/app/page-wrapper';
 import React from 'react';
-import AddSessionForm from '../../add-session/components/add-session-form';
 import { getSession } from '@/firebase/firestore';
 import EditSessionForm from '../../add-session/components/edit-sessionform';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 
 export default async function EditSessionPage({ params }: { params: { sessionId: string } }) {
   const sessionId = params.sessionId;
@@ -12,7 +13,16 @@ export default async function EditSessionPage({ params }: { params: { sessionId:
   }
   return (
     <PageWrapper center>
-      <EditSessionForm session={session} />
+      <div className='flex flex-col gap-2'>
+        <Link
+          className='mr-auto flex'
+          href='/get-session'
+        >
+          <ArrowLeft className='h-6 w-6' />
+          Back To Sessions
+        </Link>
+        <EditSessionForm session={session} />
+      </div>
     </PageWrapper>
   );
 }

@@ -1,12 +1,14 @@
 'use client';
 
 import PageWrapper from '@/app/page-wrapper';
+import CustomAlertDialog from '@/components/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { HoverCard } from '@/components/ui/hover-card';
 import { Separator } from '@/components/ui/separator';
 import { env } from '@/env';
 import { db } from '@/firebase/firebase.config';
+import { resetResults } from '@/firebase/firestore';
 import useSession from '@/hooks/useSession';
 import { Choice, SessionData } from '@/types';
 import { HoverCardContent, HoverCardTrigger } from '@radix-ui/react-hover-card';
@@ -100,10 +102,17 @@ export default function GetSessionPage({ params }: { params: { sessionId: string
             <HoverCardTrigger>
               <p className='text-center text-xl font-bold'>{session.data.accessCode}</p>
             </HoverCardTrigger>
-            <HoverCardContent>
+            <HoverCardContent className='flex flex-col gap-3'>
               <Button asChild>
                 <Link href='/get-session'>Back to sessions</Link>
               </Button>
+              <CustomAlertDialog
+                title='Reset Results'
+                description='Are you sure you want to reset the results? This action cannot be undone.'
+                onConfirm={() => resetResults(sessionId)}
+                trigger='Reset Results'
+                className='bg-red-500 text-white w-full'
+              />
             </HoverCardContent>
           </HoverCard>
         </div>

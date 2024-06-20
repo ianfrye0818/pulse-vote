@@ -16,6 +16,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import XIcon from '@/components/X-Icon';
 import { SessionData } from '@/types';
+import CustomAlertDialog from '@/components/alert-dialog';
 
 const formSchema = z.object({
   title: z.string().min(1, { message: 'Title is required' }),
@@ -92,10 +93,9 @@ export default function EditSessionForm({ session }: { session: SessionData }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Add Graph Choices</CardTitle>
+        <CardTitle>Edit Graph Choices</CardTitle>
         <CardDescription>
-          Configure the choices for your graph. You can add multiple choices and allow users to
-          select multiple options.
+          Make any edits to your graph choices here and they will be reflected instantly.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -154,7 +154,13 @@ export default function EditSessionForm({ session }: { session: SessionData }) {
             />
             <Label htmlFor='allow-multiple'>Allow Multiple Choices</Label>
           </div>
-          <Button type='submit'>Submit</Button>
+          <CustomAlertDialog
+            title='Modify Session'
+            description='Are you sure you want to modify this session?'
+            onConfirm={handleSubmit(onSubmit)}
+            trigger='Update'
+            className='bg-black text-white min-w-[100px]'
+          />
         </form>
       </CardContent>
     </Card>

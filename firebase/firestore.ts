@@ -124,10 +124,30 @@ export async function updateSession(sessionId: string, sessionData: DocumentData
       title: sessionData.title,
       sessionChoices: sessionData.choices,
       allowMultiple: sessionData.allowMultiple,
+      totalVotes: sessionData.totalVotes,
     });
     revalidatePath('/get-session');
   } catch (error) {
     console.error(['Error updating document:'], error);
+  }
+}
+
+export async function resetResults(sessionId: string) {
+  try {
+    const session = await getSession(sessionId);
+    if (!session) throw new Error('Session not found');
+    await updateSession(sessionId, {
+      ...session.data,
+      choices: session.data.sessionChoices.map((choice: Choice) => {
+        return {
+          ...choice,
+          votes: 0,
+        };
+      }),
+      totalVotes: 0,
+    });
+  } catch (error) {
+    console.error(['Error resetting results:'], error);
   }
 }
 
