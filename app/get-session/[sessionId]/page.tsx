@@ -45,7 +45,7 @@ export default function GetSessionPage({ params }: { params: { sessionId: string
 
   return (
     <div className='h-screen flex flex-col'>
-      <Card className='flex-grow-[2] container mt-3 mx-auto flex flex-col justify-between items-center '>
+      <Card className='flex-grow-[2] container mt-3 mx-auto flex flex-col justify-between items-center relative'>
         <CardHeader>
           <CardTitle>{session.data.title}</CardTitle>
         </CardHeader>
@@ -83,14 +83,20 @@ export default function GetSessionPage({ params }: { params: { sessionId: string
             })}
           </div>
         </CardContent>
+        <QRCode
+          size={130}
+          value={`${baseURL}/vote/${sessionId}`}
+          width={16}
+          className='absolute top-5 right-5  '
+        />
       </Card>
-      <div className='flex flex-col items-center'>
+      <div className='flex justify-center items-center gap-8 my-3'>
         <h2 className='text-2xl font-bold'>Total Votes</h2>
         <p className='text-xl'>{session.data.totalVotes}</p>
       </div>
-      <div className=' flex-1 p-5 flex justify-center items-center '>
-        <QRCode value={`${baseURL}/vote/${sessionId}`} />
-      </div>
+      {/* <div className=' flex-1 p-5 flex justify-center items-center '> */}
+
+      {/* </div> */}
     </div>
   );
 }
