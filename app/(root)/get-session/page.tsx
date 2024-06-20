@@ -4,8 +4,8 @@ import { TrashIcon } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 import PageWrapper from '@/app/page-wrapper';
-import SessionItem from './components/session-item';
 import AddSessionButton from './components/add-session-button';
+import SessionItem from './components/session-item';
 
 export default async function GetAllSessionsPage() {
   const sessions = await getSessionList();
