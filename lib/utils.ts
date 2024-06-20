@@ -46,6 +46,7 @@ function calculateLuminance(color: string) {
 }
 
 export function getContrastingTextColor(backgroundColor: string) {
+  backgroundColor = backgroundColor.trim().toUpperCase();
   if (!backgroundColor || typeof backgroundColor !== 'string') {
     throw new Error(`Invalid background color: ${backgroundColor}`);
   }

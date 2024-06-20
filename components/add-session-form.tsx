@@ -29,7 +29,7 @@ type FormValues = z.infer<typeof formSchema>;
 export default function AddSessionForm() {
   const router = useRouter();
   const [allowMultiple, setAllowMultiple] = useState(true);
-  // const [color, setColor] = useState('#0FDFD3');
+
   const {
     control,
     handleSubmit,
@@ -42,7 +42,7 @@ export default function AddSessionForm() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: '',
-      choices: [{ value: '', votes: 0, color: '#0FDFD3' }],
+      choices: [{ value: '', votes: 0, color: '#D0021B' }],
     },
   });
 
@@ -50,6 +50,8 @@ export default function AddSessionForm() {
     control,
     name: 'choices',
   });
+
+  console.log(watch('choices'));
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     console.log(data);
@@ -71,7 +73,7 @@ export default function AddSessionForm() {
   };
 
   const addChoice = () => {
-    append({ value: '', votes: 0, color: '#0FDFD3' }); // Include default color
+    append({ value: '', votes: 0, color: '#D0021B' }); // Include default color
   };
 
   return (

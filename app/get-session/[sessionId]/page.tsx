@@ -84,6 +84,10 @@ export default function GetSessionPage({ params }: { params: { sessionId: string
           </div>
         </CardContent>
       </Card>
+      <div className='flex flex-col items-center'>
+        <h2 className='text-2xl font-bold'>Total Votes</h2>
+        <p className='text-xl'>{session.data.totalVotes}</p>
+      </div>
       <div className=' flex-1 p-5 flex justify-center items-center '>
         <QRCode value={`${baseURL}/vote/${sessionId}`} />
       </div>

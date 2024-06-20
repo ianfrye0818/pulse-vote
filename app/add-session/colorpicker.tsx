@@ -26,7 +26,7 @@ export function ColorPicker({ color, onColorChange }: ColorPickerProps) {
       <PopoverContent className='w-min'>
         <SketchPicker
           color={color}
-          onChange={({ hex }) => onColorChange(hex)}
+          onChange={({ hex }) => onColorChange(hex.toUpperCase())}
         />
       </PopoverContent>
     </Popover>
