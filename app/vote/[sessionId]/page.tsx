@@ -43,7 +43,7 @@ export default function VoteSessionPage({ params }: { params: { sessionId: strin
   };
 
   return (
-    <div className='max-w-md mx-auto space-y-6 flex flex-col h-screen justify-center items-center'>
+    <div className='max-w-md mx-auto space-y-6 flex flex-col h-screen justify-center items-center px-4'>
       <form
         onSubmit={handleSubmit}
         className='flex flex-col gap-8 w-full'
