@@ -22,13 +22,13 @@ export default async function Home() {
           variant={'outline'}
           className='w-[150px]'
         >
-          <SignInButton />
+          <SignUpButton />
         </Button>
         <Button
           asChild
           className='w-[150px]'
         >
-          <SignUpButton />
+          <SignInButton />
         </Button>
       </div>
     </div>
