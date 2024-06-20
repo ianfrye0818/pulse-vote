@@ -45,9 +45,13 @@ export default function GetSessionPage({ params }: { params: { sessionId: string
 
   return (
     <div className='h-screen flex flex-col'>
-      <Card className='flex-grow-[2] container mt-3 mx-auto flex flex-col justify-between items-center relative'>
+      <Card className='flex-grow-[2] container mt-3 mx-auto flex flex-col justify-between items-center  relative border-none'>
         <CardHeader>
           <CardTitle>{session.data.title}</CardTitle>
+          <div className='flex justify-center items-center gap-8 my-3'>
+            <h2 className='text-2xl font-bold'>Total Votes</h2>
+            <p className='text-xl'>{session.data.totalVotes}</p>
+          </div>
         </CardHeader>
         <CardContent className='w-full flex justify-center'>
           <div className='flex gap-4'>
@@ -90,13 +94,6 @@ export default function GetSessionPage({ params }: { params: { sessionId: string
           className='absolute top-5 right-5  '
         />
       </Card>
-      <div className='flex justify-center items-center gap-8 my-3'>
-        <h2 className='text-2xl font-bold'>Total Votes</h2>
-        <p className='text-xl'>{session.data.totalVotes}</p>
-      </div>
-      {/* <div className=' flex-1 p-5 flex justify-center items-center '> */}
-
-      {/* </div> */}
     </div>
   );
 }
