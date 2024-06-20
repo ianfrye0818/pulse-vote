@@ -4,7 +4,7 @@ import { deleteSession } from '@/firebase/firestore';
 import useErrorToast from '@/hooks/useErrorToast';
 import useSuccessToast from '@/hooks/useSuccessToast';
 import { SessionData } from '@/types';
-import { TrashIcon } from 'lucide-react';
+import { Edit2Icon, TrashIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 interface SessionItemProps {
@@ -30,6 +30,11 @@ export default function SessionItem({ session }: SessionItemProps) {
     }
   };
 
+  const handleEditClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.stopPropagation();
+    router.push(`/edit-session/${session.docId}`);
+  };
+
   const handleDivClick = () => {
     router.push(`/get-session/${session.docId}`);
   };
@@ -40,16 +45,25 @@ export default function SessionItem({ session }: SessionItemProps) {
       className='flex gap-2 items-center justify-between w-full px-4 py-4 shadow-md border rounded-md border-gray-200 my-2 cursor-pointer'
     >
       <span>{session.data.title}</span>
-      <Button
-        className='bg-red-500'
-        size={'icon'}
-        onClick={(e) => handleDeleteClick(e)}
-      >
-        <TrashIcon
-          color='white'
-          size={20}
-        />
-      </Button>
+      <div className='flex items-center gap-4'>
+        <Button
+          className='bg-blue-500'
+          size={'icon'}
+          onClick={(e) => handleEditClick(e)}
+        >
+          <Edit2Icon />
+        </Button>
+        <Button
+          className='bg-red-500'
+          size={'icon'}
+          onClick={(e) => handleDeleteClick(e)}
+        >
+          <TrashIcon
+            color='white'
+            size={20}
+          />
+        </Button>
+      </div>
     </div>
   );
 }

@@ -18,7 +18,6 @@ export default function GetSessionPage({ params }: { params: { sessionId: string
   const { sessionId } = params;
   const session = useSession(db, sessionId) as SessionData;
   const baseURL = env.BASE_URL;
-  console.log(baseURL);
 
   if (!session) {
     return null;
@@ -65,8 +64,6 @@ export default function GetSessionPage({ params }: { params: { sessionId: string
               const randomColor = setRandomNonWhiteBackgroundColor();
               const percentage = (choice.votes / session.data.totalVotes) * 100 || 0;
               const backgroundColor = choice.color;
-              console.log({ choice });
-              console.log(backgroundColor);
 
               return (
                 <div

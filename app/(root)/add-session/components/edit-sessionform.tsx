@@ -1,7 +1,7 @@
 'use client';
 import { useForm, useFieldArray, SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
-import { addSession } from '@/firebase/firestore'; // Assuming this is your Firestore function
+import { addSession, updateSession } from '@/firebase/firestore'; // Assuming this is your Firestore function
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -15,6 +15,7 @@ import { ColorPicker } from './colorpicker';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import XIcon from '@/components/X-Icon';
+import { SessionData } from '@/types';
 
 const formSchema = z.object({
   title: z.string().min(1, { message: 'Title is required' }),
@@ -29,11 +30,11 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function AddSessionForm() {
+export default function EditSessionForm({ session }: { session: SessionData }) {
   const router = useRouter();
   const { successToast } = useSuccessToast();
   const { errorToast } = useErrorToast();
-  const [allowMultiple, setAllowMultiple] = useState(true);
+  const [allowMultiple, setAllowMultiple] = useState(session.data.allowMultiple);
 
   const {
     control,
@@ -46,8 +47,8 @@ export default function AddSessionForm() {
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: '',
-      choices: [{ value: '', votes: 0, color: '#D0021B' }],
+      title: session.data.title,
+      choices: session.data.sessionChoices,
     },
   });
 
@@ -58,7 +59,7 @@ export default function AddSessionForm() {
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     try {
-      await addSession(data.choices, allowMultiple, data.title);
+      await updateSession(session.docId, { ...data, allowMultiple });
       reset();
       successToast({
         message: 'Session created successfully',

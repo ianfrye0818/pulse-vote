@@ -10,6 +10,7 @@ import {
   onSnapshot,
   where,
   query,
+  DocumentData,
 } from 'firebase/firestore';
 import { Choice, SessionData } from '@/types';
 import { revalidatePath } from 'next/cache';
@@ -114,6 +115,20 @@ export async function addVote(
     });
     return 'Vote added';
   } catch (error) {}
+}
+
+export async function updateSession(sessionId: string, sessionData: DocumentData) {
+  try {
+    const sessionRef = doc(db, 'sessions', sessionId);
+    await updateDoc(sessionRef, {
+      title: sessionData.title,
+      sessionChoices: sessionData.choices,
+      allowMultiple: sessionData.allowMultiple,
+    });
+    revalidatePath('/get-session');
+  } catch (error) {
+    console.error(['Error updating document:'], error);
+  }
 }
 
 export async function deleteSession(sessionId: string) {
