@@ -8,6 +8,7 @@ import { Choice } from '@/types';
 import { addVote } from '@/firebase/firestore';
 import { db } from '@/firebase/firebase.config';
 import { useRouter } from 'next/navigation';
+import PageWrapper from '@/app/page-wrapper';
 
 export default function VoteSessionPage({ params }: { params: { sessionId: string } }) {
   const router = useRouter();
@@ -43,7 +44,7 @@ export default function VoteSessionPage({ params }: { params: { sessionId: strin
   };
 
   return (
-    <div className='max-w-md mx-auto space-y-6 flex flex-col h-screen justify-center items-center px-4'>
+    <PageWrapper center>
       <form
         onSubmit={handleSubmit}
         className='flex flex-col gap-8 w-full'
@@ -78,6 +79,6 @@ export default function VoteSessionPage({ params }: { params: { sessionId: strin
           Submit
         </Button>
       </form>
-    </div>
+    </PageWrapper>
   );
 }

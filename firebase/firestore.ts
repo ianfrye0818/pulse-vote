@@ -8,12 +8,14 @@ import {
   deleteDoc,
   getDocs,
   onSnapshot,
+  where,
+  query,
 } from 'firebase/firestore';
 import { Choice, SessionData } from '@/types';
-import { Dispatch, SetStateAction } from 'react';
 import { revalidatePath } from 'next/cache';
 import { db } from './firebase.config';
-import { redirect } from 'next/navigation';
+import { currentUser } from '@clerk/nextjs/server';
+import { NextRequest } from 'next/server';
 
 export async function addSession(
   sessionChoices: Choice[],
@@ -21,12 +23,15 @@ export async function addSession(
   title: string
 ): Promise<string | undefined> {
   try {
+    const user = await currentUser();
+    if (!user) throw new Error('Please login to create a session');
     const sessionRef = collection(db, 'sessions');
     const doc = await addDoc(sessionRef, {
       title,
       sessionChoices,
       totalVotes: 0,
       allowMultiple,
+      userId: user.id,
     });
     revalidatePath('/get-session');
     return doc.id;
@@ -49,9 +54,12 @@ export async function getSession(sessionId: string) {
 }
 
 export async function getSessionList() {
+  const user = await currentUser();
+  if (!user) throw new Error('Please login to view sessions');
   try {
-    const sessionsRef = collection(db, 'sessions');
-    const querySnapshot = await getDocs(sessionsRef);
+    const q = query(collection(db, 'sessions'), where('userId', '==', user.id));
+
+    const querySnapshot = await getDocs(q);
 
     const sessions = querySnapshot.docs.map((doc) => {
       return { docId: doc.id, data: doc.data() };
