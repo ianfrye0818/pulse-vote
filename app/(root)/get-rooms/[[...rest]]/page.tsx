@@ -5,11 +5,7 @@ import RoomItem from '../components/room-item';
 import { currentUser } from '@clerk/nextjs/server';
 
 export default async function GetAllRoomsPage() {
-  const user = await currentUser();
-  if (user) {
-  }
-  const rooms = user ? await getRoomList(user.id) : null;
-  console.log({ rooms, user });
+  const rooms = await getRoomList();
 
   if (!rooms) {
     return null;

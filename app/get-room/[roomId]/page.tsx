@@ -12,7 +12,6 @@ import useRoom from '@/hooks/useRoom';
 
 export default function GetroomPage({ params }: { params: { roomId: string } }) {
   const { roomId } = params;
-  console.log('params from getroom page', params);
   const room = useRoom(db, roomId) as roomData;
   const baseURL = env.BASE_URL;
 
