@@ -9,7 +9,7 @@ export default async function Header() {
   return (
     <header className='border-b h-16 mb-4'>
       <div className='container mx-auto flex h-full justify-between items-center '>
-        <Link href='/get-session'>
+        <Link href='/'>
           <h1 className='text-2xl font-bold'>PulseVote</h1>
         </Link>
         {user ? (
