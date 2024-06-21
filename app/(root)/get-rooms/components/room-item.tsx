@@ -1,41 +1,41 @@
 'use client';
 import CustomAlertDialog from '@/components/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { deleteSession } from '@/firebase/firestore';
+import { deleteRoom } from '@/firebase/firestore';
 import useErrorToast from '@/hooks/useErrorToast';
 import useSuccessToast from '@/hooks/useSuccessToast';
-import { SessionData } from '@/types';
+import { roomData } from '@/types';
 import { Edit2Icon, Trash2Icon, TrashIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-interface SessionItemProps {
-  session: SessionData;
+interface roomItemProps {
+  room: roomData;
 }
 
-export default function SessionItem({ session }: SessionItemProps) {
+export default function RoomItem({ room }: roomItemProps) {
   const router = useRouter();
   const { errorToast } = useErrorToast();
   const { successToast } = useSuccessToast();
 
   const handleDeleteClick = async () => {
     try {
-      await deleteSession(session.docId);
+      await deleteRoom(room.docId);
       successToast({
-        message: 'Session deleted successfully',
+        message: 'room deleted successfully',
       });
     } catch (error) {
       errorToast({
-        message: 'Failed to delete session',
+        message: 'Failed to delete room',
       });
     }
   };
 
   const handleEditClick = () => {
-    router.push(`/edit-session/${session.docId}`);
+    router.push(`/edit-room/${room.docId}`);
   };
 
   const handleDivClick = () => {
-    router.push(`/get-session/${session.docId}`);
+    router.push(`/get-room/${room.docId}`);
   };
 
   return (
@@ -43,7 +43,7 @@ export default function SessionItem({ session }: SessionItemProps) {
       onClick={handleDivClick}
       className='flex gap-2 items-center justify-between w-full px-4 py-4 shadow-md border rounded-md border-gray-200 my-2 cursor-pointer'
     >
-      <span>{session.data.title}</span>
+      <span>{room.data.title}</span>
       <div
         className='flex items-center gap-4'
         onClick={(e) => e.stopPropagation()}
@@ -57,8 +57,8 @@ export default function SessionItem({ session }: SessionItemProps) {
         </Button>
 
         <CustomAlertDialog
-          title='Delete Session'
-          description='Are you sure you want to delete this session?'
+          title='Delete room'
+          description='Are you sure you want to delete this room?'
           onConfirm={handleDeleteClick}
           trigger={<TrashIcon color='white' />}
           className='bg-red-500 text-white'

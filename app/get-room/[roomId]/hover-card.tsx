@@ -9,10 +9,10 @@ import useSuccessToast from '@/hooks/useSuccessToast';
 
 interface HoverMenuProps {
   accessCode: string;
-  sessionId: string;
+  roomId: string;
 }
 
-export default function HoverMenu({ accessCode, sessionId }: HoverMenuProps) {
+export default function HoverMenu({ accessCode, roomId }: HoverMenuProps) {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const { errorToast } = useErrorToast();
   const { successToast } = useSuccessToast();
@@ -20,7 +20,7 @@ export default function HoverMenu({ accessCode, sessionId }: HoverMenuProps) {
   async function handleResetResults() {
     try {
       setIsSubmitting(true);
-      await resetResults(sessionId);
+      await resetResults(roomId);
       successToast({
         message: 'Results reset!',
       });
@@ -29,7 +29,7 @@ export default function HoverMenu({ accessCode, sessionId }: HoverMenuProps) {
       if (error instanceof Error) {
         errorToast({
           message:
-            'Only authorized users can reset results. If you are the session owner, please try again.',
+            'Only authorized users can reset results. If you are the room owner, please try again.',
         });
       } else {
         errorToast({
@@ -49,7 +49,7 @@ export default function HoverMenu({ accessCode, sessionId }: HoverMenuProps) {
         </HoverCardTrigger>
         <HoverCardContent className='flex flex-col gap-3'>
           <Button asChild>
-            <Link href='/get-session'>Back to sessions</Link>
+            <Link href='/get-rooms'>Back to rooms</Link>
           </Button>
           <CustomAlertDialog
             title='Reset Results'

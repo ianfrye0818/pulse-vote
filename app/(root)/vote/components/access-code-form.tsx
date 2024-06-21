@@ -1,7 +1,7 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { getSessionByAccessCode } from '@/firebase/firestore';
+import { getRoomByAccessCode } from '@/firebase/firestore';
 import useErrorToast from '@/hooks/useErrorToast';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
@@ -16,15 +16,14 @@ export default function AccessCodeForm() {
     if (!accessCode) return;
     setIsSubmitting(true);
     try {
-      const session = await getSessionByAccessCode(accessCode);
-      if (!session) throw new Error('Session not found');
-      const url = `/vote/${session.docId}`;
+      const room = await getRoomByAccessCode(accessCode);
+      if (!room) throw new Error('Room not found');
+      const url = `/vote/${room.docId}`;
       router.push(url);
     } catch (error) {
       console.error(error);
       if (error instanceof Error) errorToast({ message: error.message });
-      else
-        errorToast({ message: 'An error occurred while accessing your session, please try again' });
+      else errorToast({ message: 'An error occurred while accessing your room, please try again' });
     } finally {
       setIsSubmitting(false);
     }

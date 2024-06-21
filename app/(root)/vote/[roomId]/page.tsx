@@ -1,27 +1,27 @@
 'use client';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import useSession, { SessionData } from '@/hooks/useSession';
 import { useState } from 'react';
 import SelectOption from './components/select-option';
-import { Choice } from '@/types';
+import { Choice, roomData } from '@/types';
 import { addVote } from '@/firebase/firestore';
 import { db } from '@/firebase/firebase.config';
 import { useRouter } from 'next/navigation';
 import PageWrapper from '@/app/page-wrapper';
+import useRoom from '@/hooks/useRoom';
 
-export default function VoteSessionPage({ params }: { params: { sessionId: string } }) {
+export default function VoteroomPage({ params }: { params: { roomId: string } }) {
   const router = useRouter();
-  const session = useSession(db, params.sessionId) as SessionData;
+  const room = useRoom(db, params.roomId) as roomData;
   const [submitting, setSubmitting] = useState(false);
   const [userChoices, setUserChoices] = useState<string[]>([]);
-  const allowMultiple = session?.data.allowMultiple;
-  if (!session) {
+  const allowMultiple = room?.data.allowMultiple;
+  if (!room) {
     return null;
   }
 
   const handleChange = (index: number) => {
-    const choice = session.data.sessionChoices[index].value;
+    const choice = room.data.roomChoices[index].value;
 
     if (!allowMultiple && userChoices.length > 0) {
       setUserChoices([choice]);
@@ -38,12 +38,10 @@ export default function VoteSessionPage({ params }: { params: { sessionId: strin
     event.preventDefault();
     setSubmitting(true);
     try {
-      await addVote(params.sessionId, userChoices);
+      await addVote(params.roomId, userChoices);
       router.push('/vote/thank-you');
     } catch (error) {
       console.error(['Error submitting vote', error]);
-    } finally {
-      setSubmitting(false);
     }
   };
 
@@ -58,19 +56,19 @@ export default function VoteSessionPage({ params }: { params: { sessionId: strin
             htmlFor='options'
             className='font-semibold text-3xl'
           >
-            {session.data.title}
+            {room.data.title}
           </Label>
           <p className='text-muted-foreground'>
             {allowMultiple ? 'Select your options' : 'Select single Option'}
           </p>
         </div>
         <div className='space-y-5'>
-          {session.data.sessionChoices.map((choice: Choice, index: number) => (
+          {room.data.roomChoices.map((choice: Choice, index: number) => (
             <SelectOption
               key={index}
               id={`option${index}`}
               title={choice.value}
-              allowMultiple={!!session?.data.allowMultiple}
+              allowMultiple={!!room?.data.allowMultiple}
               checked={userChoices.includes(choice.value)}
               onChange={() => handleChange(index)}
             />
@@ -81,7 +79,7 @@ export default function VoteSessionPage({ params }: { params: { sessionId: strin
           className='w-full'
           disabled={submitting}
         >
-          {submitting ? 'Submitting...' : 'Submit'}
+          {submitting ? 'Submitting...' : 'Vote'}
         </Button>
       </form>
     </PageWrapper>

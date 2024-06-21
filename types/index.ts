@@ -6,7 +6,7 @@ export interface Choice {
   color?: string;
 }
 
-export interface SessionData {
+export interface roomData {
   docId: string;
   data: DocData | DocumentData;
 }
@@ -14,7 +14,7 @@ export interface SessionData {
 export interface DocData {
   title: string;
   allowMultiple: boolean;
-  sessionChoices: Choice[];
+  roomChoices: Choice[];
   totalVotes: number;
   accessCode: string;
 }

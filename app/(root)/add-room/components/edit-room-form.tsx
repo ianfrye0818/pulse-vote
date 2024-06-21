@@ -1,7 +1,7 @@
 'use client';
 import { useForm, useFieldArray, SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
-import { addSession } from '@/firebase/firestore'; // Assuming this is your Firestore function
+import { updateRoom } from '@/firebase/firestore'; // Assuming this is your Firestore function
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -15,6 +15,8 @@ import { ColorPicker } from './colorpicker';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import XIcon from '@/components/X-Icon';
+import { roomData } from '@/types';
+import CustomAlertDialog from '@/components/alert-dialog';
 
 const formSchema = z.object({
   title: z.string().min(1, { message: 'Title is required' }),
@@ -29,11 +31,11 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function AddSessionForm() {
+export default function EditRoomForm({ room }: { room: roomData }) {
   const router = useRouter();
   const { successToast } = useSuccessToast();
   const { errorToast } = useErrorToast();
-  const [allowMultiple, setAllowMultiple] = useState(true);
+  const [allowMultiple, setAllowMultiple] = useState(room.data.allowMultiple);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -47,8 +49,8 @@ export default function AddSessionForm() {
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: '',
-      choices: [{ value: '', votes: 0, color: '#D0021B' }],
+      title: room.data.title,
+      choices: room.data.roomChoices,
     },
   });
 
@@ -60,12 +62,16 @@ export default function AddSessionForm() {
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     setIsSubmitting(true);
     try {
-      await addSession(data.choices, allowMultiple, data.title);
+      await updateRoom(room.docId, {
+        ...data,
+        allowMultiple,
+        totalVotes: room.data.totalVotes,
+      });
       reset();
       successToast({
-        message: 'Session created successfully',
+        message: 'Room updated successfully',
       });
-      router.push('/get-session');
+      router.push('/get-rooms');
     } catch (error) {
       if (error instanceof z.ZodError) {
         console.error('Validation failed:', error.errors);
@@ -75,7 +81,7 @@ export default function AddSessionForm() {
       } else if (error instanceof Error) {
         console.error('Error:', error);
         errorToast({
-          message: 'An error occurred while creating the session',
+          message: 'An error occurred while creating the room',
         });
       } else {
         console.error('Unknown error:', error);
@@ -95,10 +101,9 @@ export default function AddSessionForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Add Graph Choices</CardTitle>
+        <CardTitle>Edit Graph Choices</CardTitle>
         <CardDescription>
-          Configure the choices for your graph. You can add multiple choices and allow users to
-          select multiple options.
+          Make any edits to your graph choices here and they will be reflected instantly.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -157,12 +162,14 @@ export default function AddSessionForm() {
             />
             <Label htmlFor='allow-multiple'>Allow Multiple Choices</Label>
           </div>
-          <Button
-            type='submit'
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? 'Submitting... ' : 'Submit'}
-          </Button>
+          <CustomAlertDialog
+            submitting={isSubmitting}
+            title='Modify Room'
+            description='Are you sure you want to modify this room?'
+            onConfirm={handleSubmit(onSubmit)}
+            trigger='Update'
+            className='bg-black text-white min-w-[100px]'
+          />
         </form>
       </CardContent>
     </Card>

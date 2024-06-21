@@ -1,7 +1,7 @@
 'use client';
 import { useForm, useFieldArray, SubmitHandler } from 'react-hook-form';
 import { z } from 'zod';
-import { addSession, updateSession } from '@/firebase/firestore'; // Assuming this is your Firestore function
+import { addRoom } from '@/firebase/firestore'; // Assuming this is your Firestore function
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -15,8 +15,6 @@ import { ColorPicker } from './colorpicker';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import XIcon from '@/components/X-Icon';
-import { SessionData } from '@/types';
-import CustomAlertDialog from '@/components/alert-dialog';
 
 const formSchema = z.object({
   title: z.string().min(1, { message: 'Title is required' }),
@@ -31,11 +29,11 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function EditSessionForm({ session }: { session: SessionData }) {
+export default function AddRoomForm() {
   const router = useRouter();
   const { successToast } = useSuccessToast();
   const { errorToast } = useErrorToast();
-  const [allowMultiple, setAllowMultiple] = useState(session.data.allowMultiple);
+  const [allowMultiple, setAllowMultiple] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -49,8 +47,8 @@ export default function EditSessionForm({ session }: { session: SessionData }) {
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: session.data.title,
-      choices: session.data.sessionChoices,
+      title: '',
+      choices: [{ value: '', votes: 0, color: '#D0021B' }],
     },
   });
 
@@ -62,16 +60,12 @@ export default function EditSessionForm({ session }: { session: SessionData }) {
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     setIsSubmitting(true);
     try {
-      await updateSession(session.docId, {
-        ...data,
-        allowMultiple,
-        totalVotes: session.data.totalVotes,
-      });
+      await addRoom(data.choices, allowMultiple, data.title);
       reset();
       successToast({
-        message: 'Session updated successfully',
+        message: 'room created successfully',
       });
-      router.push('/get-session');
+      router.push('/get-rooms');
     } catch (error) {
       if (error instanceof z.ZodError) {
         console.error('Validation failed:', error.errors);
@@ -81,7 +75,7 @@ export default function EditSessionForm({ session }: { session: SessionData }) {
       } else if (error instanceof Error) {
         console.error('Error:', error);
         errorToast({
-          message: 'An error occurred while creating the session',
+          message: 'An error occurred while creating the room',
         });
       } else {
         console.error('Unknown error:', error);
@@ -101,9 +95,10 @@ export default function EditSessionForm({ session }: { session: SessionData }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Edit Graph Choices</CardTitle>
+        <CardTitle>Add Graph Choices</CardTitle>
         <CardDescription>
-          Make any edits to your graph choices here and they will be reflected instantly.
+          Configure the choices for your graph. You can add multiple choices and allow users to
+          select multiple options.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -162,14 +157,12 @@ export default function EditSessionForm({ session }: { session: SessionData }) {
             />
             <Label htmlFor='allow-multiple'>Allow Multiple Choices</Label>
           </div>
-          <CustomAlertDialog
-            submitting={isSubmitting}
-            title='Modify Session'
-            description='Are you sure you want to modify this session?'
-            onConfirm={handleSubmit(onSubmit)}
-            trigger='Update'
-            className='bg-black text-white min-w-[100px]'
-          />
+          <Button
+            type='submit'
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Submitting... ' : 'Submit'}
+          </Button>
         </form>
       </CardContent>
     </Card>
