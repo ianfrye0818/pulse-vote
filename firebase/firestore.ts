@@ -197,7 +197,7 @@ async function checkAuthorization({
     }
     return { user, session };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw new Error(errorMessage || 'Unauthorized');
   }
 }

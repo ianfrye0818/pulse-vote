@@ -23,7 +23,8 @@ export default function HoverMenu({ accessCode, sessionId }: HoverMenuProps) {
       console.error(error);
       if (error instanceof Error) {
         errorToast({
-          message: error.message,
+          message:
+            'Only authorized users can reset results. If you are the session owner, please try again.',
         });
       } else {
         errorToast({
