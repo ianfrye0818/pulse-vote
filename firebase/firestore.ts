@@ -7,12 +7,11 @@ import {
   getDoc,
   deleteDoc,
   getDocs,
-  onSnapshot,
   where,
   query,
   DocumentData,
 } from 'firebase/firestore';
-import { Choice, SessionData } from '@/types';
+import { Choice } from '@/types';
 import { revalidatePath } from 'next/cache';
 import { db } from './firebase.config';
 import { currentUser } from '@clerk/nextjs/server';
@@ -25,8 +24,9 @@ export async function addSession(
   title: string
 ): Promise<string | undefined> {
   try {
-    const user = await currentUser();
-    if (!user) throw new Error('Please login to create a session');
+    const { user } = await checkAuthorization({
+      errorMessage: 'Please sign in to create a session',
+    });
     const sessionRef = collection(db, 'sessions');
     const doc = await addDoc(sessionRef, {
       title,
@@ -40,6 +40,7 @@ export async function addSession(
     return doc.id;
   } catch (error) {
     console.error(['Error adding document:'], error);
+    throw error;
   }
 }
 
@@ -53,6 +54,7 @@ export async function getSession(sessionId: string) {
     }
   } catch (error) {
     console.error(['Error getting document:'], error);
+    throw error;
   }
 }
 
@@ -69,12 +71,15 @@ export async function getSessionByAccessCode(accessCode: string) {
     return sessions[0];
   } catch (error) {
     console.error(['Error getting documents:'], error);
+    throw error;
   }
 }
 
 export async function getSessionList() {
-  const user = await currentUser();
-  if (!user) throw new Error('Please login to view sessions');
+  const { user } = await checkAuthorization({
+    errorMessage: 'Please sign in to view your sessions',
+  });
+
   try {
     const q = query(collection(db, 'sessions'), where('userId', '==', user.id));
 
@@ -87,6 +92,7 @@ export async function getSessionList() {
     return sessions;
   } catch (error) {
     console.error(['Error getting documents:'], error);
+    throw error;
   }
 }
 
@@ -114,10 +120,17 @@ export async function addVote(
       totalVotes: document.data.totalVotes + 1,
     });
     return 'Vote added';
-  } catch (error) {}
+  } catch (error) {
+    console.error(['Error adding vote:'], error);
+    throw error;
+  }
 }
 
 export async function updateSession(sessionId: string, sessionData: DocumentData) {
+  await checkAuthorization({
+    sessionId,
+    errorMessage: 'Only the session owner can update the session',
+  });
   try {
     const sessionRef = doc(db, 'sessions', sessionId);
     await updateDoc(sessionRef, {
@@ -129,6 +142,7 @@ export async function updateSession(sessionId: string, sessionData: DocumentData
     revalidatePath('/get-session');
   } catch (error) {
     console.error(['Error updating document:'], error);
+    throw error;
   }
 }
 
@@ -148,15 +162,42 @@ export async function resetResults(sessionId: string) {
     });
   } catch (error) {
     console.error(['Error resetting results:'], error);
+    throw error;
   }
 }
 
 export async function deleteSession(sessionId: string) {
+  await checkAuthorization({ sessionId });
   try {
     const sessionRef = doc(db, 'sessions', sessionId);
     await deleteDoc(sessionRef);
     revalidatePath('/get-session');
   } catch (error) {
     console.error(['Error deleting document:'], error);
+    throw error;
+  }
+}
+
+async function checkAuthorization({
+  sessionId,
+  errorMessage,
+}: { sessionId?: string; errorMessage?: string } = {}) {
+  try {
+    let session = null;
+    const user = await currentUser();
+    if (!user) {
+      throw new Error('Unauthorized');
+    }
+
+    if (sessionId) {
+      const session = await getSession(sessionId);
+      if (!user || !session || session.data.userId !== user.id) {
+        throw new Error('Unauthorized');
+      }
+    }
+    return { user, session };
+  } catch (error) {
+    console.log(error);
+    throw new Error(errorMessage || 'Unauthorized');
   }
 }

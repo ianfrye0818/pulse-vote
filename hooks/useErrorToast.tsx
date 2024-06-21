@@ -11,7 +11,7 @@ export default function useErrorToast() {
 
   const errorToast = ({ message, title, duration }: ErrorToastProps) => {
     toast({
-      title: title || 'E R R O R',
+      title: title || 'Error',
       description: message,
       variant: 'destructive',
       duration,

@@ -20,13 +20,21 @@ export default function HoverMenu({ accessCode, sessionId }: HoverMenuProps) {
       setIsSubmitting(true);
       await resetResults(sessionId);
     } catch (error) {
-      errorToast({
-        message: 'Failed to reset results',
-      });
+      console.error(error);
+      if (error instanceof Error) {
+        errorToast({
+          message: error.message,
+        });
+      } else {
+        errorToast({
+          message: 'Failed to reset results',
+        });
+      }
     } finally {
       setIsSubmitting(false);
     }
   }
+
   return (
     <div>
       <HoverCard>
