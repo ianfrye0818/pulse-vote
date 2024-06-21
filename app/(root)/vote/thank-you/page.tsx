@@ -11,13 +11,6 @@ export default function ThankYouForVotingPage() {
             We appreciate your participation in our survey. Your input will be automatically updated
             in the presentation shortly.
           </p>
-          {/* <Link
-            href="#"
-            className="inline-flex items-center justify-center h-10 px-6 rounded-md bg-primary text-primary-foreground font-medium transition-colors hover:bg-primary/90 focus:outline-none focus:ring-1 focus:ring-ring focus:ring-offset-2"
-            prefetch={false}
-            >
-            Return to Home
-            </Link> */}
         </div>
       </div>
     </PageWrapper>

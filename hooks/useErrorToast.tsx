@@ -1,4 +1,5 @@
 import { useToast } from '@/components/ui/use-toast';
+import { capitalizeFirstLetter } from '@/lib/utils';
 
 interface ErrorToastProps {
   message: string;
@@ -11,8 +12,8 @@ export default function useErrorToast() {
 
   const errorToast = ({ message, title, duration }: ErrorToastProps) => {
     toast({
-      title: title || 'Error',
-      description: message,
+      title: title ? capitalizeFirstLetter(title) : 'Error',
+      description: capitalizeFirstLetter(message),
       variant: 'destructive',
       duration: duration || 5000,
     });

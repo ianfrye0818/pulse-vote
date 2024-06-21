@@ -1,4 +1,5 @@
 import { useToast } from '@/components/ui/use-toast';
+import { capitalizeFirstLetter } from '@/lib/utils';
 
 interface successToastProps {
   message: string;
@@ -11,8 +12,8 @@ export default function useSuccessToast() {
 
   const successToast = ({ message, title, duration }: successToastProps) => {
     toast({
-      title: title || 'Success!',
-      description: message,
+      title: title ? capitalizeFirstLetter(title) : 'Success!',
+      description: capitalizeFirstLetter(message),
       variant: 'success',
       duration,
     });

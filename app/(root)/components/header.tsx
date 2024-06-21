@@ -20,7 +20,7 @@ export default async function Header() {
             <Link href='/vote'>Vote</Link>
           </Button>
           {user ? (
-            <UserButton />
+            <UserButton afterSignOutUrl='/' />
           ) : (
             <Button asChild>
               <Link href='/sign-in'>Sign In</Link>

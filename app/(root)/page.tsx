@@ -1,14 +1,13 @@
 import { Button } from '@/components/ui/button';
 import { SignInButton, SignUpButton } from '@clerk/nextjs';
 import { currentUser } from '@clerk/nextjs/server';
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import React from 'react';
 import PageWrapper from '../page-wrapper';
 
 export default async function Home() {
   const user = await currentUser();
-  if (user) redirect('/get-session');
+  if (user) redirect('/get-rooms');
   return (
     <PageWrapper center>
       <div className='flex flex-col justify-evenly h-full'>

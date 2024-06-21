@@ -18,25 +18,25 @@ import { currentUser } from '@clerk/nextjs/server';
 import { NextRequest } from 'next/server';
 import { generateAccessCode } from '@/lib/utils';
 
-export async function addSession(
-  sessionChoices: Choice[],
+export async function addRoom(
+  roomChoices: Choice[],
   allowMultiple: boolean,
   title: string
 ): Promise<string | undefined> {
   try {
     const { user } = await checkAuthorization({
-      errorMessage: 'Please sign in to create a session',
+      errorMessage: 'Please sign in to create a room',
     });
-    const sessionRef = collection(db, 'sessions');
-    const doc = await addDoc(sessionRef, {
+    const roomRef = collection(db, 'rooms');
+    const doc = await addDoc(roomRef, {
       title,
-      sessionChoices,
+      roomChoices,
       totalVotes: 0,
       allowMultiple,
       userId: user.id,
       accessCode: generateAccessCode(),
     });
-    revalidatePath('/get-session');
+    revalidatePath('/get-rooms');
     return doc.id;
   } catch (error) {
     console.error(['Error adding document:'], error);
@@ -44,9 +44,10 @@ export async function addSession(
   }
 }
 
-export async function getSession(sessionId: string) {
+export async function getRoom(roomId: string) {
   try {
-    const docRef = doc(db, 'sessions', sessionId);
+    const docRef = doc(db, 'rooms', roomId);
+
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
@@ -58,57 +59,51 @@ export async function getSession(sessionId: string) {
   }
 }
 
-export async function getSessionByAccessCode(accessCode: string) {
+export async function getRoomByAccessCode(accessCode: string) {
   try {
-    const q = query(
-      collection(db, 'sessions'),
-      where('accessCode', '==', accessCode.toUpperCase())
-    );
+    const q = query(collection(db, 'rooms'), where('accessCode', '==', accessCode.toUpperCase()));
     const querySnapshot = await getDocs(q);
-    const sessions = querySnapshot.docs.map((doc) => {
+    const rooms = querySnapshot.docs.map((doc) => {
       return { docId: doc.id, data: doc.data() };
     });
-    return sessions[0];
+    return rooms[0];
   } catch (error) {
-    console.error(['Error getting documents:'], error);
+    console.error(['Error getting room'], error);
     throw error;
   }
 }
 
-export async function getSessionList() {
+export async function getRoomList() {
   const { user } = await checkAuthorization({
-    errorMessage: 'Please sign in to view your sessions',
+    errorMessage: 'Please sign in to view your rooms',
   });
 
   try {
-    const q = query(collection(db, 'sessions'), where('userId', '==', user.id));
+    const q = query(collection(db, 'rooms'), where('userId', '==', user.id));
 
     const querySnapshot = await getDocs(q);
 
-    const sessions = querySnapshot.docs.map((doc) => {
+    const rooms = querySnapshot.docs.map((doc) => {
       return { docId: doc.id, data: doc.data() };
     });
 
-    return sessions;
+    return rooms;
   } catch (error) {
     console.error(['Error getting documents:'], error);
     throw error;
   }
 }
 
-export async function addVote(
-  sessionId: string,
-  userChices: string[]
-): Promise<string | undefined> {
+export async function addVote(roomId: string, userChices: string[]): Promise<string | undefined> {
   try {
-    const document = await getSession(sessionId);
+    const document = await getRoom(roomId);
     if (!document) {
-      throw new Error('Session not found');
+      throw new Error('room not found');
     }
-    const sessionRef = doc(db, 'sessions', sessionId);
+    const roomRef = doc(db, 'rooms', roomId);
 
-    await updateDoc(sessionRef, {
-      sessionChoices: document.data.sessionChoices.map((choice: Choice) => {
+    await updateDoc(roomRef, {
+      roomChoices: document.data.roomChoices.map((choice: Choice) => {
         if (userChices.includes(choice.value)) {
           return {
             ...choice,
@@ -126,33 +121,33 @@ export async function addVote(
   }
 }
 
-export async function updateSession(sessionId: string, sessionData: DocumentData) {
+export async function updateRoom(roomId: string, roomData: DocumentData) {
   await checkAuthorization({
-    sessionId,
-    errorMessage: 'Only the session owner can update the session',
+    roomId,
+    errorMessage: 'Only the room owner can update the room',
   });
   try {
-    const sessionRef = doc(db, 'sessions', sessionId);
-    await updateDoc(sessionRef, {
-      title: sessionData.title,
-      sessionChoices: sessionData.choices,
-      allowMultiple: sessionData.allowMultiple,
-      totalVotes: sessionData.totalVotes,
+    const roomRef = doc(db, 'rooms', roomId);
+    await updateDoc(roomRef, {
+      title: roomData.title,
+      roomChoices: roomData.choices,
+      allowMultiple: roomData.allowMultiple,
+      totalVotes: roomData.totalVotes,
     });
-    revalidatePath('/get-session');
+    revalidatePath('/get-rooms');
   } catch (error) {
-    console.error(['Error updating document:'], error);
+    console.error(['Error updating room:'], error);
     throw error;
   }
 }
 
-export async function resetResults(sessionId: string) {
+export async function resetResults(roomId: string) {
   try {
-    const session = await getSession(sessionId);
-    if (!session) throw new Error('Session not found');
-    await updateSession(sessionId, {
-      ...session.data,
-      choices: session.data.sessionChoices.map((choice: Choice) => {
+    const room = await getRoom(roomId);
+    if (!room) throw new Error('Room not found');
+    await updateRoom(roomId, {
+      ...room.data,
+      choices: room.data.roomChoices.map((choice: Choice) => {
         return {
           ...choice,
           votes: 0,
@@ -166,12 +161,12 @@ export async function resetResults(sessionId: string) {
   }
 }
 
-export async function deleteSession(sessionId: string) {
-  await checkAuthorization({ sessionId });
+export async function deleteRoom(roomId: string) {
+  await checkAuthorization({ roomId });
   try {
-    const sessionRef = doc(db, 'sessions', sessionId);
-    await deleteDoc(sessionRef);
-    revalidatePath('/get-session');
+    const roomRef = doc(db, 'rooms', roomId);
+    await deleteDoc(roomRef);
+    revalidatePath('/get-rooms');
   } catch (error) {
     console.error(['Error deleting document:'], error);
     throw error;
@@ -179,23 +174,23 @@ export async function deleteSession(sessionId: string) {
 }
 
 async function checkAuthorization({
-  sessionId,
+  roomId,
   errorMessage,
-}: { sessionId?: string; errorMessage?: string } = {}) {
+}: { roomId?: string; errorMessage?: string } = {}) {
   try {
-    let session = null;
+    let room = null;
     const user = await currentUser();
     if (!user) {
       throw new Error('Unauthorized');
     }
 
-    if (sessionId) {
-      const session = await getSession(sessionId);
-      if (!user || !session || session.data.userId !== user.id) {
+    if (roomId) {
+      const room = await getRoom(roomId);
+      if (!user || !room || room.data.userId !== user.id) {
         throw new Error('Unauthorized');
       }
     }
-    return { user, session };
+    return { user, room };
   } catch (error) {
     console.error(error);
     throw new Error(errorMessage || 'Unauthorized');

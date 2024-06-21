@@ -91,3 +91,10 @@ export function isTooLight(color: string) {
   const brightness = (r * 299 + g * 587 + b * 114) / 1000;
   return brightness > 200; // Adjust this threshold as needed
 }
+
+export function capitalizeFirstLetter(string: string) {
+  return string
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
