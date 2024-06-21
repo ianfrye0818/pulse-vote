@@ -42,8 +42,6 @@ export default function VoteroomPage({ params }: { params: { roomId: string } })
       router.push('/vote/thank-you');
     } catch (error) {
       console.error(['Error submitting vote', error]);
-    } finally {
-      setSubmitting(false);
     }
   };
 
@@ -81,7 +79,7 @@ export default function VoteroomPage({ params }: { params: { roomId: string } })
           className='w-full'
           disabled={submitting}
         >
-          {submitting ? 'Submitting...' : 'Submit'}
+          {submitting ? 'Submitting...' : 'Vote'}
         </Button>
       </form>
     </PageWrapper>
