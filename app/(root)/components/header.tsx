@@ -12,13 +12,21 @@ export default async function Header() {
         <Link href='/'>
           <h1 className='text-2xl font-bold'>PulseVote</h1>
         </Link>
-        {user ? (
-          <UserButton />
-        ) : (
-          <Button asChild>
-            <Link href='/sign-in'>Sign In</Link>
+        <div className='flex items-center gap-3'>
+          <Button
+            variant={'secondary'}
+            asChild
+          >
+            <Link href='/vote'>Vote</Link>
           </Button>
-        )}
+          {user ? (
+            <UserButton />
+          ) : (
+            <Button asChild>
+              <Link href='/sign-in'>Sign In</Link>
+            </Button>
+          )}
+        </div>
       </div>
     </header>
   );

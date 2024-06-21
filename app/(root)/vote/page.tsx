@@ -6,7 +6,7 @@ export default function VotePage() {
   return (
     <PageWrapper center>
       <div className='flex flex-col gap-4 text-center'>
-        <h1 className='text-2xl font-bold'>Enter Access Code</h1>
+        <h1 className='text-2xl font-bold'>Enter Room Code</h1>
         <AccessCodeForm />
       </div>
     </PageWrapper>

@@ -40,6 +40,7 @@ export default function AccessCodeForm() {
         minLength={4}
         onChange={(e) => setAccessCode(e.target.value.toUpperCase())}
         value={accessCode}
+        placeholder='Enter Room Code'
       />
       <Button
         disabled={isSubmitting}
