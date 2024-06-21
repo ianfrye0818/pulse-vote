@@ -69,7 +69,7 @@ export default function EditSessionForm({ session }: { session: SessionData }) {
       });
       reset();
       successToast({
-        message: 'Session created successfully',
+        message: 'Session updated successfully',
       });
       router.push('/get-session');
     } catch (error) {

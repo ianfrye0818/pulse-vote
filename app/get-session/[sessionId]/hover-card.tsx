@@ -5,6 +5,7 @@ import Link from 'next/link';
 import CustomAlertDialog from '@/components/alert-dialog';
 import { resetResults } from '@/firebase/firestore';
 import useErrorToast from '@/hooks/useErrorToast';
+import useSuccessToast from '@/hooks/useSuccessToast';
 
 interface HoverMenuProps {
   accessCode: string;
@@ -14,11 +15,15 @@ interface HoverMenuProps {
 export default function HoverMenu({ accessCode, sessionId }: HoverMenuProps) {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const { errorToast } = useErrorToast();
+  const { successToast } = useSuccessToast();
 
   async function handleResetResults() {
     try {
       setIsSubmitting(true);
       await resetResults(sessionId);
+      successToast({
+        message: 'Results reset!',
+      });
     } catch (error) {
       console.error(error);
       if (error instanceof Error) {
