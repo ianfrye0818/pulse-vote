@@ -74,10 +74,7 @@ export async function getRoomByAccessCode(accessCode: string) {
 }
 
 export async function getRoomList() {
-  const { user } = await checkAuthorization({
-    errorMessage: 'Please sign in to view your rooms',
-  });
-
+  const { user } = await checkAuthorization();
   try {
     const q = query(collection(db, 'rooms'), where('userId', '==', user.id));
 

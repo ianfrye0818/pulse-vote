@@ -9,3 +9,4 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </section>
   );
 }
+export const dynamic = 'force-dynamic';
