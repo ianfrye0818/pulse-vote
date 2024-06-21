@@ -14,7 +14,7 @@ export default function useErrorToast() {
       title: title || 'Error',
       description: message,
       variant: 'destructive',
-      duration: duration || 3000,
+      duration: duration || 5000,
     });
   };
 
