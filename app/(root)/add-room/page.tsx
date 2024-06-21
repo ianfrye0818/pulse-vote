@@ -11,7 +11,7 @@ export default function page() {
       <div className='flex flex-col gap-2'>
         <Link
           className='mr-auto flex'
-          href='/get-session'
+          href='/get-rooms'
         >
           <ArrowLeft className='h-6 w-6' />
           Back To Sessions
