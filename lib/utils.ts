@@ -56,7 +56,7 @@ export function getContrastingTextColor(backgroundColor: string) {
 }
 
 export function generateAccessCode() {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const characters = 'ABCDEFGHIJKLMNPQRSTUVWXYZ123456789';
   let code = '';
   const codeLength = 4;
 
