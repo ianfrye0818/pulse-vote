@@ -12,8 +12,9 @@ export default async function EditroomPage({ params }: { params: { roomId: strin
     return null;
   }
   return (
-    <PageWrapper center>
-      <div className='flex flex-col gap-2'>
+    <>
+      {' '}
+      <div className='flex flex-col gap-2 h-full justify-center'>
         <Link
           className='mr-auto flex'
           href='/get-rooms'
@@ -23,6 +24,6 @@ export default async function EditroomPage({ params }: { params: { roomId: strin
         </Link>
         <EditRoomForm room={room} />
       </div>
-    </PageWrapper>
+    </>
   );
 }

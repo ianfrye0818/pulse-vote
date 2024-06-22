@@ -7,17 +7,17 @@ import AddRoomForm from './components/add-room-form';
 
 export default function page() {
   return (
-    <PageWrapper center>
-      <div className='flex flex-col gap-2'>
+    <>
+      <div className='flex flex-col gap-2 h-full justify-center'>
         <Link
           className='mr-auto flex'
           href='/get-rooms'
         >
           <ArrowLeft className='h-6 w-6' />
-          Back To Sessions
+          Back To Rooms
         </Link>
         <AddRoomForm />
       </div>
-    </PageWrapper>
+    </>
   );
 }

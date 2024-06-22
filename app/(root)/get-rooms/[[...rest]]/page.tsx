@@ -12,7 +12,8 @@ export default async function GetAllRoomsPage() {
   }
 
   return (
-    <PageWrapper center={rooms?.length === 0}>
+    // <PageWrapper center={rooms?.length === 0}>
+    <>
       {rooms.length > 0 ? (
         <div className='flex flex-col gap-4  w-full'>
           <div className='ml-auto'>
@@ -34,6 +35,6 @@ export default async function GetAllRoomsPage() {
           <AddRoomButton />
         </div>
       )}
-    </PageWrapper>
+    </>
   );
 }
