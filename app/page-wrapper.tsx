@@ -9,7 +9,7 @@ type PageWrapperProps = {
 export default function PageWrapper({ children, center }: PageWrapperProps) {
   return (
     <div
-      className={clsx('h-[calc(100vh-5rem)] flex flex-col items-center container mx-auto', {
+      className={clsx('h-full flex flex-col items-center container mx-auto', {
         'justify-center': center,
       })}
     >

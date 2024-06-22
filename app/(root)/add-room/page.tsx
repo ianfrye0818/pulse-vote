@@ -14,7 +14,7 @@ export default function page() {
           href='/get-rooms'
         >
           <ArrowLeft className='h-6 w-6' />
-          Back To Sessions
+          Back To Rooms
         </Link>
         <AddRoomForm />
       </div>

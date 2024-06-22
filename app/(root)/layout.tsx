@@ -6,11 +6,11 @@ import PageWrapper from '../page-wrapper';
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <Header />
-      <main>
+      <main className='h-screen grid grid-rows-[96px,1fr,auto]'>
+        <Header />
         <PageWrapper>{children}</PageWrapper>
+        <Footer />
       </main>
-      <Footer />
     </>
   );
 }

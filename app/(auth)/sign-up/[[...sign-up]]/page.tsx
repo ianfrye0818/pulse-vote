@@ -3,8 +3,8 @@ import PageWrapper from '@/app/page-wrapper';
 
 export default function SignUpPage() {
   return (
-    <PageWrapper center>
+    <section className='h-screen flex justify-center items-center'>
       <SignUp />
-    </PageWrapper>
+    </section>
   );
 }

@@ -1,12 +1,13 @@
+'use client';
 import React from 'react';
-import { PacmanLoader } from 'react-spinners';
+import { TailSpin } from 'react-loader-spinner';
 
 export default function LoadingScreen() {
   return (
     <div className='h-screen w-full justify-center items-center flex flex-col'>
-      <PacmanLoader
-        color='#D0021B'
-        size={50}
+      <TailSpin
+        color='#3b83f6'
+        height={100}
       />
     </div>
   );

@@ -3,8 +3,8 @@ import PageWrapper from '@/app/page-wrapper';
 
 export default function SignInPage() {
   return (
-    <PageWrapper center>
+    <section className='h-screen flex justify-center items-center'>
       <SignIn />
-    </PageWrapper>
+    </section>
   );
 }

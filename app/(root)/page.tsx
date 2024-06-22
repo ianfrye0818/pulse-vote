@@ -4,16 +4,15 @@ import Image from 'next/image';
 import { currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 
-export default async function Component() {
+export default async function HomePage() {
   const user = await currentUser();
   if (user) {
     redirect('/get-rooms');
   }
-  const year = new Date().getFullYear();
   return (
     <>
       {' '}
-      <section className='w-full py-12 md:py-24 lg:py-32 xl:py-48'>
+      <section className='w-full h-full py-12 md:py-24 lg:py-32 xl:py-48'>
         <div className='container px-4 md:px-6'>
           <div className='grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]'>
             <div className='flex flex-col justify-center space-y-4'>
@@ -63,7 +62,7 @@ export default async function Component() {
               </h2>
               <p className='max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed'>
                 Engage your audience with real-time polling, custom questions, and instant results.
-                Pollster makes it easy to gather feedback and make data-driven decisions.
+                Pulse Vote makes it easy to gather feedback and make data-driven decisions.
               </p>
             </div>
           </div>

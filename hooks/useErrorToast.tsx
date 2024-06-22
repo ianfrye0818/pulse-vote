@@ -5,12 +5,13 @@ interface ErrorToastProps {
   message: string;
   title?: string;
   duration?: number;
+  error?: unknown;
 }
 
 export default function useErrorToast() {
   const { toast } = useToast();
 
-  const errorToast = ({ message, title, duration }: ErrorToastProps) => {
+  const errorToast = ({ message, title, duration, error }: ErrorToastProps) => {
     toast({
       title: title ? capitalizeFirstLetter(title) : 'Error',
       description: capitalizeFirstLetter(message),
