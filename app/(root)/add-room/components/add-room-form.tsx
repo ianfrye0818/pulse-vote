@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button';
 import { ColorPicker } from './colorpicker';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import XIcon from '@/components/X-Icon';
+import { XIcon } from 'lucide-react';
 
 const formSchema = z.object({
   title: z.string().min(1, { message: 'Title is required' }),
