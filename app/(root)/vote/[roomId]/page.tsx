@@ -49,7 +49,7 @@ export default function VoteroomPage({ params }: { params: { roomId: string } })
     <PageWrapper center>
       <form
         onSubmit={handleSubmit}
-        className='flex flex-col gap-8 w-full'
+        className='flex flex-col gap-8 w-full md:max-w-[750px] md:p-8 lg:rounded-xl lg:shadow-lg'
       >
         <div className='space-y-2'>
           <Label
@@ -59,7 +59,7 @@ export default function VoteroomPage({ params }: { params: { roomId: string } })
             {room.data.title}
           </Label>
           <p className='text-muted-foreground'>
-            {allowMultiple ? 'Select your options' : 'Select single Option'}
+            {allowMultiple ? 'Select Your Options' : 'Select Single Option'}
           </p>
         </div>
         <div className='space-y-5'>
