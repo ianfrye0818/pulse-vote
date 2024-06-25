@@ -22,7 +22,7 @@ const SelectOption = ({ id, title, allowMultiple, checked, onChange }: OptionPro
       />
       <Label
         htmlFor={id}
-        className='text-base font-medium'
+        className='text-base font-medium cursor-pointer'
       >
         {title}
       </Label>
