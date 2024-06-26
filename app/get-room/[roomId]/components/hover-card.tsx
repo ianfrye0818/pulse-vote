@@ -40,7 +40,7 @@ export default function HoverMenu({ accessCode, roomId }: HoverMenuProps) {
     <div>
       <HoverCard>
         <HoverCardTrigger>
-          <p className='text-center text-xl font-bold'>{accessCode}</p>
+          <p className='text-center text-xl font-bold cursor-pointer'>{accessCode}</p>
         </HoverCardTrigger>
         {user && (
           <HoverCardContent className='flex flex-col gap-3'>

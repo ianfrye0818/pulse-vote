@@ -42,14 +42,18 @@ export default async function HomePage() {
                 </Link>
               </div>
             </div>
-
-            <Image
-              src={IMAGES.pulseVoteGraphImage}
-              width='550'
-              height='550'
-              alt='Hero'
-              className='mx-auto aspect-video rounded-xl object-contain sm:w-full lg:order-last lg:aspect-square'
-            />
+            <a
+              href='https://www.pulse-vote.com/get-room/yuW44HyKb9MCN9JnTdxm'
+              target='_blank'
+            >
+              <Image
+                src={IMAGES.pulseVoteGraphImage}
+                width='550'
+                height='550'
+                alt='vote for how do you like your eggs'
+                className='mx-auto aspect-video rounded-xl object-contain sm:w-full lg:order-last lg:aspect-square'
+              />
+            </a>
           </div>
         </div>
       </section>
